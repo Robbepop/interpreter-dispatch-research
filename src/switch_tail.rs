@@ -49,9 +49,7 @@ impl Inst {
                 handler::branch_eqz(context.context, *target, *condition);
                 context.tail_execute_next()
             }
-            Inst::Return { result } => {
-                handler::ret(context.context, *result)
-            }
+            Inst::Return { result } => handler::ret(context.context, *result),
         }
     }
 }
