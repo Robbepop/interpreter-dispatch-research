@@ -45,6 +45,9 @@ For the execution every instruction calls the next instruction instead of
 using a central loop. This way every single instruction contains the switch
 over the instruction kind which may result in bloated compiled source code.
 
+**Note:** This technique is pretty much unusable in current Rust since Rust is
+missing guaranteed tail call elimination.
+
 Benchmark result: `472.79ms`
 
 ## `closure_loop` Technique
@@ -67,6 +70,10 @@ This way we can model the control flow according to basic blocks whereas
 all basic blocks of the source input have exactly one root closure that calls
 the rest via tail calls.
 
+**Note:** Doing tail calls in this technique is fine with current Rust since
+we only do tail calls within basic blocks and not throughout loops since we
+escape upon branches.
+
 Benchmark result: `944.12ms`
 
 ## `closure_tail` Technique
@@ -74,5 +81,8 @@ Benchmark result: `944.12ms`
 This is very similar to the `switch_tail` technique.
 The only notable difference is that instructions are now organized as
 closures as in `closure_loop` and `closure_tree` techniques.
+
+**Note:** This technique is pretty much unusable in current Rust since Rust is
+missing guaranteed tail call elimination.
 
 Benchmark result: `867.14ms` (default `profile.release`)
