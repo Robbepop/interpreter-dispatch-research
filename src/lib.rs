@@ -1,6 +1,7 @@
 mod closure_loop;
 mod closure_tail;
 mod closure_tree;
+mod fused;
 mod switch;
 mod switch_tail;
 
