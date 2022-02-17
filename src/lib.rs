@@ -1,7 +1,8 @@
 mod closure_loop;
+mod closure_tail;
 mod closure_tree;
-mod ind_tail_call;
 mod switch;
+mod switch_tail;
 
 pub type Register = usize;
 pub type Bits = u64;
