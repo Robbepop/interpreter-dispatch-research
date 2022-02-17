@@ -21,6 +21,12 @@ Where `{name}` is one of
 # Architectures
 
 All benchmark results are performed on my personal machine.
+If not stated otherwise benchmarks have been performed using Cargo profile:
+```toml
+[profile.release]
+lto = "fat"
+codegen-units = 1
+```
 
 ## `switch` Technique
 
@@ -30,7 +36,7 @@ It defines an `enum` with all the bytecodes and their parameters.
 For execution it simply loops over the instructions and matches on the
 kind of the next instruction that is about to be executed.
 
-Benchmark result: `497.41ms`
+Benchmark result: `461.57ms`
 
 ## `switch_tail` Technique
 
@@ -39,7 +45,7 @@ For the execution every instruction calls the next instruction instead of
 using a central loop. This way every single instruction contains the switch
 over the instruction kind which may result in bloated compiled source code.
 
-Benchmark result: `657.92ms`
+Benchmark result: `472.79ms`
 
 ## `closure_loop` Technique
 
@@ -48,7 +54,7 @@ next instruction, however, it replaces the central match with a indirect
 call to boxed closures that contain everything that is required for the
 instruction execution.
 
-Benchmark result: `933.29ms`
+Benchmark result: `836.79ms`
 
 ## `closure_tree` Technique
 
@@ -61,7 +67,7 @@ This way we can model the control flow according to basic blocks whereas
 all basic blocks of the source input have exactly one root closure that calls
 the rest via tail calls.
 
-Benchmark result: `1019.01ms`
+Benchmark result: `944.12ms`
 
 ## `closure_tail` Technique
 
@@ -69,4 +75,4 @@ This is very similar to the `switch_tail` technique.
 The only notable difference is that instructions are now organized as
 closures as in `closure_loop` and `closure_tree` techniques.
 
-Benchmark result: `867.14ms`
+Benchmark result: `867.14ms` (default `profile.release`)
