@@ -142,9 +142,9 @@ impl Execute for Inst {
 
 #[derive(Copy, Clone)]
 pub struct AddInst {
-    result: Sink,
-    lhs: Source,
-    rhs: Source,
+    pub result: Sink,
+    pub lhs: Source,
+    pub rhs: Source,
 }
 
 impl Execute for AddInst {
@@ -158,9 +158,9 @@ impl Execute for AddInst {
 
 #[derive(Copy, Clone)]
 pub struct SubInst {
-    result: Sink,
-    lhs: Source,
-    rhs: Source,
+    pub result: Sink,
+    pub lhs: Source,
+    pub rhs: Source,
 }
 
 impl Execute for SubInst {
@@ -174,7 +174,7 @@ impl Execute for SubInst {
 
 #[derive(Copy, Clone)]
 pub struct BranchInst {
-    target: Target,
+    pub target: Target,
 }
 
 impl Execute for BranchInst {
@@ -185,8 +185,8 @@ impl Execute for BranchInst {
 
 #[derive(Copy, Clone)]
 pub struct BranchEqzInst {
-    target: Target,
-    condition: Source,
+    pub target: Target,
+    pub condition: Source,
 }
 
 impl Execute for BranchEqzInst {
@@ -202,7 +202,7 @@ impl Execute for BranchEqzInst {
 
 #[derive(Copy, Clone)]
 pub struct ReturnInst {
-    result: Source,
+    pub result: Source,
 }
 
 impl Execute for ReturnInst {

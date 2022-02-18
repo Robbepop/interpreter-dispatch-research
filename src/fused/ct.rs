@@ -278,6 +278,12 @@ pub struct AddInst<R, P0, P1> {
     rhs: P1,
 }
 
+impl<R, P0, P1> AddInst<R, P0, P1> {
+    pub fn new(result: R, lhs: P0, rhs: P1) -> Self {
+        Self { result, lhs, rhs }
+    }
+}
+
 impl<R, P0, P1> IntoData for AddInst<R, P0, P1>
 where
     R: Into<RawSink>,
@@ -324,6 +330,12 @@ pub struct SubInst<R, P0, P1> {
     rhs: P1,
 }
 
+impl<R, P0, P1> SubInst<R, P0, P1> {
+    pub fn new(result: R, lhs: P0, rhs: P1) -> Self {
+        Self { result, lhs, rhs }
+    }
+}
+
 impl<R, P0, P1> IntoData for SubInst<R, P0, P1>
 where
     R: Into<RawSink>,
@@ -368,6 +380,12 @@ pub struct BranchInst {
     target: Target,
 }
 
+impl BranchInst {
+    pub fn new(target: Target) -> Self {
+        Self { target }
+    }
+}
+
 impl IntoData for BranchInst {
     fn into_data(self) -> InstData {
         InstData {
@@ -397,6 +415,12 @@ impl Execute for BranchInst {
 pub struct BranchEqzInst<C> {
     target: Target,
     condition: C,
+}
+
+impl<C> BranchEqzInst<C> {
+    pub fn new(target: Target, condition: C) -> Self {
+        Self { target, condition }
+    }
 }
 
 impl<C> IntoData for BranchEqzInst<C>
@@ -442,6 +466,12 @@ where
 #[derive(Copy, Clone)]
 pub struct ReturnInst<R> {
     result: R,
+}
+
+impl<C> ReturnInst<C> {
+    pub fn new(result: C) -> Self {
+        Self { result }
+    }
 }
 
 impl<R> IntoData for ReturnInst<R>
