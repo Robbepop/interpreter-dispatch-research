@@ -197,8 +197,7 @@ impl Inst {
         let inst = AddInst { result, lhs, rhs };
         Self {
             handler: move |context, data| {
-                let inst: AddInst<R, P0, P1> = FromData::from_data(data);
-                inst.execute(context)
+                <AddInst<R, P0, P1> as FromData>::from_data(data).execute(context)
             },
             data: IntoData::into_data(inst),
         }
@@ -213,8 +212,7 @@ impl Inst {
         let inst = SubInst { result, lhs, rhs };
         Self {
             handler: move |context, data| {
-                let inst: SubInst<R, P0, P1> = FromData::from_data(data);
-                inst.execute(context)
+                <SubInst<R, P0, P1> as FromData>::from_data(data).execute(context)
             },
             data: IntoData::into_data(inst),
         }
@@ -224,8 +222,7 @@ impl Inst {
         let inst = BranchInst { target };
         Self {
             handler: move |context, data| {
-                let inst: BranchInst = FromData::from_data(data);
-                inst.execute(context)
+                <BranchInst as FromData>::from_data(data).execute(context)
             },
             data: IntoData::into_data(inst),
         }
@@ -238,8 +235,7 @@ impl Inst {
         let inst = BranchEqzInst { target, condition };
         Self {
             handler: move |context, data| {
-                let inst: BranchEqzInst<C> = FromData::from_data(data);
-                inst.execute(context)
+                <BranchEqzInst<C> as FromData>::from_data(data).execute(context)
             },
             data: IntoData::into_data(inst),
         }
@@ -252,8 +248,7 @@ impl Inst {
         let inst = ReturnInst { result };
         Self {
             handler: move |context, data| {
-                let inst: ReturnInst<R> = FromData::from_data(data);
-                inst.execute(context)
+                <ReturnInst<R> as FromData>::from_data(data).execute(context)
             },
             data: IntoData::into_data(inst),
         }
@@ -271,7 +266,7 @@ pub trait FromData {
 }
 
 pub trait Execute {
-    fn execute(&self, context: &mut Context) -> Outcome;
+    fn execute(self, context: &mut Context) -> Outcome;
 }
 
 // ===
@@ -312,7 +307,7 @@ where
     P0: Load,
     P1: Load,
 {
-    fn execute(&self, context: &mut Context) -> Outcome {
+    fn execute(self, context: &mut Context) -> Outcome {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
         self.result.store(context, lhs.wrapping_add(rhs));
@@ -358,7 +353,7 @@ where
     P0: Load,
     P1: Load,
 {
-    fn execute(&self, context: &mut Context) -> Outcome {
+    fn execute(self, context: &mut Context) -> Outcome {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
         self.result.store(context, lhs.wrapping_sub(rhs));
@@ -391,7 +386,7 @@ impl FromData for BranchInst {
 }
 
 impl Execute for BranchInst {
-    fn execute(&self, context: &mut Context) -> Outcome {
+    fn execute(self, context: &mut Context) -> Outcome {
         context.branch_to(self.target)
     }
 }
@@ -432,7 +427,7 @@ impl<C> Execute for BranchEqzInst<C>
 where
     C: Load,
 {
-    fn execute(&self, context: &mut Context) -> Outcome {
+    fn execute(self, context: &mut Context) -> Outcome {
         let condition = self.condition.load(context);
         if condition == 0 {
             context.branch_to(self.target)
@@ -476,7 +471,7 @@ impl<R> Execute for ReturnInst<R>
 where
     R: Load,
 {
-    fn execute(&self, context: &mut Context) -> Outcome {
+    fn execute(self, context: &mut Context) -> Outcome {
         let result = self.result.load(context);
         context.set_reg(Register(0), result);
         Outcome::Return
