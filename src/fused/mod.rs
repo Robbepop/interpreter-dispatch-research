@@ -34,7 +34,7 @@ impl Context {
 
     pub fn set_reg(&mut self, reg: Register, new_value: Bits) {
         let reg = reg.into_usize();
-        debug_assert!(reg > self.regs.len());
+        debug_assert!(reg < self.regs.len());
         unsafe {
             *self.regs.get_unchecked_mut(reg) = new_value;
         }
@@ -42,13 +42,13 @@ impl Context {
 
     pub fn get_reg(&self, reg: Register) -> Bits {
         let reg = reg.into_usize();
-        debug_assert!(reg > self.regs.len());
+        debug_assert!(reg < self.regs.len());
         unsafe { *self.regs.get_unchecked(reg) }
     }
 
     pub fn set_global(&mut self, global: Global, new_value: Bits) {
         let global = global.into_usize();
-        debug_assert!(global > self.globals.len());
+        debug_assert!(global < self.globals.len());
         unsafe {
             *self.globals.get_unchecked_mut(global) = new_value;
         }
