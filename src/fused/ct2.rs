@@ -1,13 +1,13 @@
 #![allow(dead_code)]
 
 use super::{
-    ct::{AddInst, BranchEqzInst, BranchInst, Execute, Load, ReturnInst, Store, SubInst},
+    ct::{AddInst, BranchEqzInst, BranchInst, Execute, ReturnInst, SubInst},
     rt::{
         AddInst as DynamicAddInst, BranchEqzInst as DynamicBranchEqzInst,
         BranchInst as DynamicBranchInst, Inst as DynamicInst, ReturnInst as DynamicReturnInst,
         Sink, Source, SubInst as DynamicSubInst,
     },
-    Bits, Const, Context, Global, Outcome, Register, Target,
+    Const, Context, Global, Outcome, Register,
 };
 use derive_more::From;
 
