@@ -72,6 +72,7 @@ pub trait Execute {
 pub enum Inst {
     Add(AddInst),
     Sub(SubInst),
+    Mul(MulInst),
     Branch(BranchInst),
     BranchEqz(BranchEqzInst),
     Return(ReturnInst),
@@ -98,6 +99,19 @@ impl Inst {
         P1: Into<Source>,
     {
         Self::Sub(SubInst {
+            result: result.into(),
+            lhs: lhs.into(),
+            rhs: rhs.into(),
+        })
+    }
+
+    pub fn mul<R, P0, P1>(result: R, lhs: P0, rhs: P1) -> Self
+    where
+        R: Into<Sink>,
+        P0: Into<Source>,
+        P1: Into<Source>,
+    {
+        Self::Mul(MulInst {
             result: result.into(),
             lhs: lhs.into(),
             rhs: rhs.into(),
@@ -133,6 +147,7 @@ impl Execute for Inst {
         match self {
             Inst::Add(inst) => inst.execute(context),
             Inst::Sub(inst) => inst.execute(context),
+            Inst::Mul(inst) => inst.execute(context),
             Inst::Branch(inst) => inst.execute(context),
             Inst::BranchEqz(inst) => inst.execute(context),
             Inst::Return(inst) => inst.execute(context),
@@ -168,6 +183,22 @@ impl Execute for SubInst {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
         self.result.store(context, lhs.wrapping_sub(rhs));
+        context.next_inst()
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct MulInst {
+    pub result: Sink,
+    pub lhs: Source,
+    pub rhs: Source,
+}
+
+impl Execute for MulInst {
+    fn execute(&self, context: &mut Context) -> Outcome {
+        let lhs = self.lhs.load(context);
+        let rhs = self.rhs.load(context);
+        self.result.store(context, lhs.wrapping_mul(rhs));
         context.next_inst()
     }
 }
