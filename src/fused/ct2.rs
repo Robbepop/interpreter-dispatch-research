@@ -125,10 +125,10 @@ impl Compile for DynamicInst {
         match self {
             DynamicInst::Add(inst) => inst.compile(),
             DynamicInst::Sub(inst) => inst.compile(),
-            DynamicInst::Mul(inst) => todo!(),
             DynamicInst::Branch(inst) => inst.compile(),
             DynamicInst::BranchEqz(inst) => inst.compile(),
             DynamicInst::Return(inst) => inst.compile(),
+            _ => todo!(),
         }
     }
 }

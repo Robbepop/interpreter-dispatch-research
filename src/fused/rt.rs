@@ -73,6 +73,8 @@ pub enum Inst {
     Add(AddInst),
     Sub(SubInst),
     Mul(MulInst),
+    Eq(EqInst),
+    Ne(NeInst),
     Branch(BranchInst),
     BranchEqz(BranchEqzInst),
     Return(ReturnInst),
@@ -148,11 +150,39 @@ impl Execute for Inst {
             Inst::Add(inst) => inst.execute(context),
             Inst::Sub(inst) => inst.execute(context),
             Inst::Mul(inst) => inst.execute(context),
+            Inst::Eq(inst) => inst.execute(context),
+            Inst::Ne(inst) => inst.execute(context),
             Inst::Branch(inst) => inst.execute(context),
             Inst::BranchEqz(inst) => inst.execute(context),
             Inst::Return(inst) => inst.execute(context),
         }
     }
+}
+
+macro_rules! impl_cmp_insts {
+    ( $( $inst_name:ident($op_name:ident) ),* $(,)? ) => {
+        $(
+            #[derive(Copy, Clone)]
+            pub struct $inst_name {
+                pub result: Sink,
+                pub lhs: Source,
+                pub rhs: Source,
+            }
+
+            impl Execute for $inst_name {
+                fn execute(&self, context: &mut Context) -> Outcome {
+                    let lhs = self.lhs.load(context);
+                    let rhs = self.rhs.load(context);
+                    self.result.store(context, lhs.$op_name(&rhs) as u64);
+                    context.next_inst()
+                }
+            }
+        )*
+    };
+}
+impl_cmp_insts! {
+    EqInst(eq),
+    NeInst(ne),
 }
 
 #[derive(Copy, Clone)]
