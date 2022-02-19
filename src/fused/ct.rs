@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[cfg(test)]
+use crate::benchmark;
+
 use super::{Bits, Const, Context, Global, Outcome, Register, Target};
 
 // ===
@@ -541,5 +544,5 @@ fn counter_loop() {
         Inst::ret(Register(0)),
     ];
     let mut context = Context::default();
-    execute(&insts, &mut context);
+    benchmark(|| execute(&insts, &mut context));
 }

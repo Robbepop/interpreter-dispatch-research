@@ -1,6 +1,7 @@
 mod closure_loop;
 mod closure_tail;
 mod closure_block;
+// mod closure_tree;
 mod fused;
 mod switch;
 mod switch_tail;
@@ -8,6 +9,19 @@ mod switch_tail;
 pub type Register = usize;
 pub type Bits = u64;
 pub type Target = usize;
+
+use std::time::{Instant, Duration};
+
+pub fn benchmark<F, R>(f: F) -> (Duration, R)
+where
+    F: FnOnce() -> R,
+{
+    let before = Instant::now();
+    let result = f();
+    let duration = before.elapsed();
+    println!("duration = {:?}", duration);
+    (duration, result)
+}
 
 /// The outcome of an instruction execution.
 #[derive(Copy, Clone)]

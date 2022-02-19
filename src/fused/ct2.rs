@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[cfg(test)]
+use crate::benchmark;
+
 use super::{
     ct::{AddInst, BranchEqzInst, BranchInst, Execute, ReturnInst, SubInst},
     rt::{
@@ -311,5 +314,5 @@ fn counter_loop() {
     ]
     .map(DynamicInst::compile);
     let mut context = Context::default();
-    execute(&insts, &mut context);
+    benchmark(|| execute(&insts, &mut context));
 }

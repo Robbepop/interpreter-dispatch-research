@@ -3,13 +3,12 @@
 #[cfg(test)]
 use crate::benchmark;
 
-use super::{Bits, Const, Context, Global, Outcome, Register, Target};
+use super::{Bits, Const, Context, Outcome, Register, Target};
 
 #[derive(Copy, Clone)]
 pub enum Source {
     Const(Const),
     Register(Register),
-    Global(Global),
 }
 
 impl From<Const> for Source {
@@ -24,45 +23,11 @@ impl From<Register> for Source {
     }
 }
 
-impl From<Global> for Source {
-    fn from(global: Global) -> Self {
-        Self::Global(global)
-    }
-}
-
 impl Source {
     pub fn load(&self, context: &Context) -> Bits {
         match self {
             Source::Const(constant) => constant.into_bits(),
             Source::Register(register) => context.get_reg(*register),
-            Source::Global(global) => context.get_global(*global),
-        }
-    }
-}
-
-#[derive(Copy, Clone)]
-pub enum Sink {
-    Register(Register),
-    Global(Global),
-}
-
-impl From<Register> for Sink {
-    fn from(register: Register) -> Self {
-        Self::Register(register)
-    }
-}
-
-impl From<Global> for Sink {
-    fn from(global: Global) -> Self {
-        Self::Global(global)
-    }
-}
-
-impl Sink {
-    fn store(&self, context: &mut Context, value: Bits) {
-        match self {
-            Sink::Register(register) => context.set_reg(*register, value),
-            Sink::Global(global) => context.set_global(*global, value),
         }
     }
 }
@@ -84,40 +49,37 @@ pub enum Inst {
 }
 
 impl Inst {
-    pub fn add<R, P0, P1>(result: R, lhs: P0, rhs: P1) -> Self
+    pub fn add<P0, P1>(result: Register, lhs: P0, rhs: P1) -> Self
     where
-        R: Into<Sink>,
         P0: Into<Source>,
         P1: Into<Source>,
     {
         Self::Add(AddInst {
-            result: result.into(),
+            result,
             lhs: lhs.into(),
             rhs: rhs.into(),
         })
     }
 
-    pub fn sub<R, P0, P1>(result: R, lhs: P0, rhs: P1) -> Self
+    pub fn sub<P0, P1>(result: Register, lhs: P0, rhs: P1) -> Self
     where
-        R: Into<Sink>,
         P0: Into<Source>,
         P1: Into<Source>,
     {
         Self::Sub(SubInst {
-            result: result.into(),
+            result,
             lhs: lhs.into(),
             rhs: rhs.into(),
         })
     }
 
-    pub fn mul<R, P0, P1>(result: R, lhs: P0, rhs: P1) -> Self
+    pub fn mul<P0, P1>(result: Register, lhs: P0, rhs: P1) -> Self
     where
-        R: Into<Sink>,
         P0: Into<Source>,
         P1: Into<Source>,
     {
         Self::Mul(MulInst {
-            result: result.into(),
+            result,
             lhs: lhs.into(),
             rhs: rhs.into(),
         })
@@ -167,7 +129,7 @@ macro_rules! impl_cmp_insts {
         $(
             #[derive(Copy, Clone)]
             pub struct $inst_name {
-                pub result: Sink,
+                pub result: Register,
                 pub lhs: Source,
                 pub rhs: Source,
             }
@@ -176,7 +138,7 @@ macro_rules! impl_cmp_insts {
                 fn execute(&self, context: &mut Context) -> Outcome {
                     let lhs = self.lhs.load(context);
                     let rhs = self.rhs.load(context);
-                    self.result.store(context, lhs.$op_name(&rhs) as u64);
+                    context.set_reg(self.result, lhs.$op_name(&rhs) as u64);
                     context.next_inst()
                 }
             }
@@ -190,7 +152,7 @@ impl_cmp_insts! {
 
 #[derive(Copy, Clone)]
 pub struct AddInst {
-    pub result: Sink,
+    pub result: Register,
     pub lhs: Source,
     pub rhs: Source,
 }
@@ -199,14 +161,14 @@ impl Execute for AddInst {
     fn execute(&self, context: &mut Context) -> Outcome {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
-        self.result.store(context, lhs.wrapping_add(rhs));
+        context.set_reg(self.result, lhs.wrapping_add(rhs));
         context.next_inst()
     }
 }
 
 #[derive(Copy, Clone)]
 pub struct SubInst {
-    pub result: Sink,
+    pub result: Register,
     pub lhs: Source,
     pub rhs: Source,
 }
@@ -215,14 +177,14 @@ impl Execute for SubInst {
     fn execute(&self, context: &mut Context) -> Outcome {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
-        self.result.store(context, lhs.wrapping_sub(rhs));
+        context.set_reg(self.result, lhs.wrapping_sub(rhs));
         context.next_inst()
     }
 }
 
 #[derive(Copy, Clone)]
 pub struct MulInst {
-    pub result: Sink,
+    pub result: Register,
     pub lhs: Source,
     pub rhs: Source,
 }
@@ -231,7 +193,7 @@ impl Execute for MulInst {
     fn execute(&self, context: &mut Context) -> Outcome {
         let lhs = self.lhs.load(context);
         let rhs = self.rhs.load(context);
-        self.result.store(context, lhs.wrapping_mul(rhs));
+        context.set_reg(self.result, lhs.wrapping_mul(rhs));
         context.next_inst()
     }
 }
