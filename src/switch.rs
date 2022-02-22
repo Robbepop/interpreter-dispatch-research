@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[cfg(test)]
+use crate::benchmark;
+
 use super::{handler, Bits, Context, Outcome, Register, Target};
 
 #[derive(Copy, Clone)]
@@ -106,7 +109,7 @@ fn counter_loop() {
         Inst::Return { result: 0 },
     ];
     let mut context = Context::default();
-    execute(&insts, &mut context);
+    benchmark(|| execute(&insts, &mut context));
 }
 
 #[test]
@@ -156,5 +159,5 @@ fn more_comps() {
         Inst::Return { result: 1 },
     ];
     let mut context = Context::default();
-    execute(&insts, &mut context);
+    benchmark(|| execute(&insts, &mut context));
 }

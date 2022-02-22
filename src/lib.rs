@@ -1,6 +1,7 @@
+mod closure_block;
 mod closure_loop;
 mod closure_tail;
-mod closure_block;
+mod closure_tree;
 // mod closure_tree;
 mod fused;
 mod switch;
@@ -10,7 +11,7 @@ pub type Register = usize;
 pub type Bits = u64;
 pub type Target = usize;
 
-use std::time::{Instant, Duration};
+use std::time::{Duration, Instant};
 
 pub fn benchmark<F, R>(f: F) -> (Duration, R)
 where

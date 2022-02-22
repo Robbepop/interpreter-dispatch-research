@@ -1,5 +1,8 @@
 #![allow(dead_code)]
 
+#[cfg(test)]
+use crate::benchmark;
+
 use super::{handler, Bits, Context, Outcome, Register, Target};
 
 /// A closure based instruction.
@@ -79,5 +82,5 @@ fn counter_loop() {
         Inst::ret(0),
     ];
     let mut context = Context::default();
-    execute(&insts, &mut context);
+    benchmark(|| execute(&insts, &mut context));
 }
