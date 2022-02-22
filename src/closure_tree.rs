@@ -118,19 +118,6 @@ fn counter_loop() {
         Inst::add_imm(0, 0, repetitions),
         Inst::loop_block(Inst::branch_eqz(Expr::sub_imm(0, 0, 1))),
     ]);
-    // let inst = vec![
-    //     // Store `repetitions` into r0.
-    //     // Note: r0 is our loop counter register.
-    //     Inst::add_imm(0, 0, repetitions),
-    //     // Branch to the end if r0 is zero.
-    //     Inst::branch_eqz(4, 0),
-    //     // Decrease r0 by 1.
-    //     Inst::sub_imm(0, 0, 1),
-    //     // Jump back to the loop header.
-    //     Inst::branch(1),
-    //     // Return value and end function execution.
-    //     Inst::ret(0),
-    // ];
     let mut context = Context::default();
     benchmark(|| inst.execute(&mut context));
 }
