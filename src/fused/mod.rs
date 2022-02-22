@@ -3,6 +3,7 @@ mod ct2;
 mod ct3;
 mod rt;
 mod rt2;
+mod rt3;
 
 use crate::{Outcome, Target};
 
