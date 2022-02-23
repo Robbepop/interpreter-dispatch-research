@@ -52,7 +52,7 @@ impl Default for Context {
 impl Context {
     /// Sets the register `reg` to the `new_value`.
     pub fn set_reg(&mut self, reg: Register, new_value: Bits) {
-        debug_assert!(reg > self.regs.len());
+        debug_assert!(reg < self.regs.len());
         unsafe {
             *self.regs.get_unchecked_mut(reg) = new_value;
         }
@@ -60,7 +60,7 @@ impl Context {
 
     /// Returns the current value of `reg`.
     pub fn get_reg(&self, reg: Register) -> Bits {
-        debug_assert!(reg > self.regs.len());
+        debug_assert!(reg < self.regs.len());
         unsafe { *self.regs.get_unchecked(reg) }
     }
 
