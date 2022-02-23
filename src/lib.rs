@@ -8,6 +8,7 @@ mod enum_tree;
 mod enum_tree_2;
 mod fused;
 mod switch;
+mod switch_2;
 mod switch_tail;
 mod switch_tail_2;
 
