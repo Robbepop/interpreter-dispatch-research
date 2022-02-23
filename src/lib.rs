@@ -4,6 +4,7 @@ mod closure_tail;
 mod closure_tree;
 // mod closure_tree;
 mod enum_tree;
+mod enum_tree_2;
 mod fused;
 mod switch;
 mod switch_tail;
