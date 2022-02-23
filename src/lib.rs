@@ -8,6 +8,7 @@ mod enum_tree_2;
 mod fused;
 mod switch;
 mod switch_tail;
+mod switch_tail_2;
 
 pub type Register = usize;
 pub type Bits = u64;
