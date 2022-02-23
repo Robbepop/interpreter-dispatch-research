@@ -12,7 +12,7 @@ pub struct ExecContext<'i, 'c> {
 
 impl<'i, 'c> ExecContext<'i, 'c> {
     pub fn tail_execute_next(&mut self) -> Outcome {
-        let inst = &self.insts[self.context.pc];
+        let inst = unsafe { self.insts.get_unchecked(self.context.pc) };
         inst.tail_execute(self)
     }
 }

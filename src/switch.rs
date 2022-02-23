@@ -73,7 +73,8 @@ impl Inst {
 fn execute(insts: &[Inst], context: &mut Context) {
     loop {
         let pc = context.pc;
-        let inst = &insts[pc];
+        // let inst = &insts[pc];
+        let inst = unsafe { insts.get_unchecked(pc) };
         match inst.execute(context) {
             Outcome::Continue => continue,
             Outcome::Return => return,
