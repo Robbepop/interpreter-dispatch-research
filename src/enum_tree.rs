@@ -17,28 +17,6 @@ pub struct Register(usize);
 #[derive(Copy, Clone)]
 pub struct Immediate(Bits);
 
-pub trait Eval {
-    fn eval(&self, context: &mut Context) -> Bits;
-}
-
-impl Eval for Register {
-    fn eval(&self, context: &mut Context) -> Bits {
-        context.get_reg(self.0)
-    }
-}
-
-impl Eval for Immediate {
-    fn eval(&self, context: &mut Context) -> Bits {
-        self.0
-    }
-}
-
-impl Eval for Expr {
-    fn eval(&self, context: &mut Context) -> Bits {
-        self.evaluate(context)
-    }
-}
-
 pub enum Expr {
     Immediate {
         immediate: Immediate,
