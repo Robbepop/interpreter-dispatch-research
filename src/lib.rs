@@ -1,6 +1,7 @@
 mod closure_block;
 mod closure_loop;
 mod closure_tail;
+mod closure_tail_2;
 mod closure_tree;
 // mod closure_tree;
 mod enum_tree;
